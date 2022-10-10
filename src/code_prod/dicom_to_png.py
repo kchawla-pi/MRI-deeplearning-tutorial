@@ -136,7 +136,8 @@ def make_save_paths(
 
 
 def main():
-    data_dirpath = Path("data")
+    project_root_dirpath = Path(__file__).parents[2]
+    data_dirpath = project_root_dirpath / "data"
 
     bounding_boxes_filepath = data_dirpath / "Annotation_Boxes.xlsx"
     image_uid_to_paths_map_filepath_xls = data_dirpath / "Breast-Cancer-MRI-filepath_filename-mapping.xlsx"
@@ -146,22 +147,22 @@ def main():
     image_uid_to_paths_map = load_image_uid_paths_mappings(image_uid_to_paths_map_filepath_xls)
     first_100_patients_map = filter_map_fat_saturated_scans_first_100_patients(image_uid_to_paths_map)
 
-    n_samples_per_class = 2600
-    n_cancer_negative_extracted_per_class = 0
-    n_cancer_positive_extracted_per_class = 0
+    n_samples_per_tumor_label = 2600
+    n_tumor_negative_samples_extracted = 0
+    n_tumor_positive_samples_extracted = 0
 
     images_dirpath = data_dirpath / "manifest-1664908432813"
     destination_image_dirpath = data_dirpath / "png_out"
 
-    for _, patient_record in tqdm(first_100_patients_map.iterrows(), total=n_samples_per_class*2):
+    for _, patient_record in tqdm(first_100_patients_map.iterrows(), total=n_samples_per_tumor_label*2):
         convert_patient_dicom_to_png(
             patient_record,
             bounding_boxes,
             images_dirpath,
             destination_image_dirpath,
-            n_cancer_positive_extracted_per_class,
-            n_cancer_negative_extracted_per_class,
-            n_samples_per_class,
+            n_tumor_positive_samples_extracted,
+            n_tumor_negative_samples_extracted,
+            n_samples_per_tumor_label,
             )
 
         ...
